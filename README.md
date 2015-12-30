@@ -10,7 +10,8 @@ Installation
 ------------
 
     > cd /path/to/queens/
-    > virtualenv venv --python=$(which python3) && source venv/bin/activate
+    > virtualenv venv --python=$(which python3)
+    > source venv/bin/activate
     > make
 
 Example invocation
