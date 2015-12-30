@@ -1,6 +1,4 @@
 #! /usr/bin/env python3
-
-
 FLIP = {
     'left': 'right',
     'right': 'left',
@@ -122,7 +120,7 @@ class Web:
                 previous = None
                 for column in self.column_iter():
                     if column.name in (name_i, name_j, name_a, name_b):
-                        link = Link(column=column,name=column.name)
+                        link = Link(column=column, name=column.name)
                         column.pend(link, 'up')
                         column.size += 1
 
