@@ -6,10 +6,14 @@ A solution to the [n-queens problem](https://en.wikipedia.org/wiki/Eight_queens_
 Casting the game as a [set cover problem](https://en.wikipedia.org/wiki/Set_cover_problem), it is solved using [the DLX algorithm](http://arxiv.org/abs/cs/0011047v1).
 This project is a stepping-stone to a better algorithm for [my sudoku project](http://github.com/jeffseif/sudoku).
 
+Entering virtualenv
+-------------------
+
+    > virtualenv venv --python=$(which python3) && source venv/bin/activate
+
 Example invocation
 ------------------
 
-    > virtualenv venv --python=$(which python3) && source venv/bin/activate
     > make && ./queens/main.py --help
     ...
     usage: main.py [-h] [--version] [size]
@@ -24,6 +28,7 @@ Example invocation
           --version   show program's version number and exit
 
           Version 1.0.0 | Jeffrey Seifried 2016
+
     > make && ./queens/main.py 4
     ...
     0
@@ -40,5 +45,4 @@ Example invocation
 How to run unit tests
 ---------------------
 
-    > virtualenv venv --python=$(which python3) && source venv/bin/activate
     > make test
