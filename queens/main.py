@@ -1,15 +1,20 @@
 #! /usr/bin/env python3
+from queens import __version__
+from queens import __author__
+from queens import __year__
+
+
 FLIP = {
     'left': 'right',
     'right': 'left',
     'up': 'down',
     'down': 'up',
 }
-SIZE = 8
+DEFAULT_SIZE = 8
 
 
-def get_smallest_column(head):
-    size = SIZE ** 2
+def find_column_of_smallest_size(head):
+    size = int(1e9)
     smallest = None
     for column in head.loop('right'):
         if column.size < size:
@@ -19,20 +24,32 @@ def get_smallest_column(head):
 
 
 class Link:
+    """Two-dimensional doubly-linked list element, with an associated column.
+    Only column-type Link instances have a size (the number of child Links)
+    and a name (for pretty printing)."""
 
-    def __init__(self, left=None, right=None, up=None, down=None, column=None, size=0, name=''):
-        self.left = left
-        self.right = right
-        self.up = up
-        self.down = down
+    __slots__ = [
+        'left',
+        'right',
+        'up',
+        'down',
+        'column',
+        'size',
+        'name',
+    ]
+
+    def __init__(self, column=None, name=''):
         self.column = column
-        self.size = size
         self.name = name
+
+        self.size = 0
+        self.left = self.right = self.up = self.down = None
 
     def __str__(self):
         return self.name
 
     def loop(self, direction, include=False):
+        """Traverse doubly-linked-list Links in a loop of a certain direction."""
         if include:
             yield self
 
@@ -41,7 +58,8 @@ class Link:
             yield link
             link = getattr(link, direction)
 
-    def pend(self, other, direction):
+    def attach(self, other, direction):
+        """Attach a Link on one side."""
         link = getattr(self, direction)
 
         setattr(self, direction, other)
@@ -52,6 +70,9 @@ class Link:
             setattr(other, direction, link)
 
     def cover(self):
+        """In the set cover problem sense: consider the column-type Link as
+        being covered and thus remove it from the Web of Links which remain
+        to be covered."""
         self.left.right = self.right
         self.right.left = self.left
 
@@ -62,6 +83,9 @@ class Link:
                 link.column.size -= 1
 
     def uncover(self):
+        """The reverse of cover.  In the set cover problem sense: consider the
+        column-type Link as not being covered and thus add it to the Web of
+        Links which remain to be covered."""
         for row in self.loop('up'):
             for link in row.loop('left'):
                 link.column.size += 1
@@ -73,80 +97,89 @@ class Link:
 
 
 class Web:
+    """A data structure for DLX (dancing links algorithm X).  (Doubly-linked)
+    head Links link to a list of column Links -- corresponding to constraints
+    for the set cover problem.  Column Links additionally link to rows which
+    link to their own list of contraints they cover -- corresponding to choices
+    or possible configurations which assemble to a solution.
+    """
 
-    def __init__(self):
+    def __init__(self, size):
+        self.size = size
+
         self.make_primary_columns()
         self.make_secondary_columns()
-        self.make_links()
+        self.make_and_attach_rows()
 
-    def column_iter(self):
+    def column_link_iter(self):
         for head in (self.primary, self.secondary):
             yield from head.loop('right')
 
     def make_primary_columns(self):
         self.primary = Link(name='primary')
-        self.primary.pend(self.primary, 'right')
+        self.primary.attach(self.primary, 'right')
         previous = self.primary
         for prefix in ('R', 'F'):
-            for index in range(SIZE):
+            for index in range(self.size):
                 name = '{}{}'.format(prefix, index)
                 column = Link(name=name)
-                column.pend(column, 'up')
+                column.attach(column, 'up')
 
-                previous.pend(column, 'right')
+                previous.attach(column, 'right')
                 previous = column
 
     def make_secondary_columns(self):
         self.secondary = Link(name='secondary')
-        self.secondary.pend(self.secondary, 'right')
+        self.secondary.attach(self.secondary, 'right')
         previous = self.secondary
         for prefix in ('A', 'B'):
-            for index in range(2 * SIZE - 1):
+            for index in range(2 * self.size - 1):
                 name = '{}{}'.format(prefix, index)
                 column = Link(name=name)
-                column.pend(column, 'up')
+                column.attach(column, 'up')
 
-                previous.pend(column, 'right')
+                previous.attach(column, 'right')
                 previous = column
 
-    def make_links(self):
-        for index in range(SIZE):
-            for jndex in range(SIZE):
+    def make_and_attach_rows(self):
+        for index in range(self.size):
+            for jndex in range(self.size):
                 name_i = 'R{}'.format(index)
                 name_j = 'F{}'.format(jndex)
                 name_a = 'A{}'.format(index + jndex)
-                name_b = 'B{}'.format(SIZE - 1 - index + jndex)
+                name_b = 'B{}'.format(self.size - 1 - index + jndex)
 
                 previous = None
-                for column in self.column_iter():
+                for column in self.column_link_iter():
                     if column.name in (name_i, name_j, name_a, name_b):
-                        link = Link(column=column, name=column.name)
-                        column.pend(link, 'up')
+                        row = Link(column=column, name=column.name)
+                        column.attach(row, 'up')
                         column.size += 1
 
                         if previous is None:
-                            link.pend(link, 'right')
+                            row.attach(row, 'right')
                         else:
-                            previous.pend(link, 'right')
-                        previous = link
+                            previous.attach(row, 'right')
+                        previous = row
 
     def print_columns(self):
-        print(','.join(map(str, self.column_iter())))
+        print(','.join(map(str, self.column_link_iter())))
 
     def print_column_rows(self):
-        for column in self.column_iter():
+        for column in self.column_link_iter():
             print('{}:'.format(column), ','.join(map(str, column.loop('down'))))
 
     def solve(self):
         yield from self.search(self.primary, [])
 
     def search(self, head, solution):
+        """The heart of the DLX algorithm."""
         column = head.right
         if column == head:
             yield solution
             return
         else:
-            column = get_smallest_column(head)
+            column = find_column_of_smallest_size(head)
 
         column.cover()
 
@@ -170,13 +203,38 @@ def print_solution(solution):
 
 
 def main():
-    web = Web()
-    web.print_columns()
-    web.print_column_rows()
+    import argparse
+
+    __version__author__year__ = '{} | {} {}'.format(
+        __version__,
+        __author__,
+        __year__,
+    )
+
+    parser = argparse.ArgumentParser(
+        description='N-queens solver',
+        epilog='Version {}'.format(__version__author__year__)
+    )
+    parser.add_argument(
+        '--version',
+        action='version',
+        version='%(prog)s {}'.format(__version__author__year__),
+    )
+    parser.add_argument(
+        'size',
+        nargs='?',
+        default=DEFAULT_SIZE,
+        type=int,
+        help='Number of queens (e.g., %(default)s)',
+    )
+    args = parser.parse_args()
+
+    web = Web(size=args.size)
     for index, solution in enumerate(web.solve()):
         print(index)
         print_solution(solution)
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    sys.exit(main())
