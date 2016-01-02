@@ -3,8 +3,8 @@ from queens import __author__
 from queens import __version__
 from queens import __year__
 
+from queens.matrix import Matrix
 from queens.solution import Solution
-from queens.web import Web
 
 
 DEFAULT_SIZE = 8
@@ -37,8 +37,8 @@ def main():
     )
     args = parser.parse_args()
 
-    web = Web(size=args.size)
-    for index, solution in enumerate(web.solve()):
+    matrix = Matrix(size=args.size)
+    for index, solution in enumerate(matrix.solve()):
         print(index)
         print(Solution(solution))
 

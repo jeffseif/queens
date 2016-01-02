@@ -1,4 +1,9 @@
-from queens import FLIP
+FLIP = {
+    'left': 'right',
+    'right': 'left',
+    'up': 'down',
+    'down': 'up',
+}
 
 
 class Link:
@@ -49,7 +54,7 @@ class Link:
 
     def cover(self):
         """In the set cover problem sense: consider the column-type Link as
-        being covered and thus remove it from the Web of Links which remain
+        being covered and thus remove it from the Matrix of Links which remain
         to be covered."""
         self.left.right = self.right
         self.right.left = self.left
@@ -62,7 +67,7 @@ class Link:
 
     def uncover(self):
         """The reverse of cover.  In the set cover problem sense: consider the
-        column-type Link as not being covered and thus add it to the Web of
+        column-type Link as not being covered and thus add it to the Matrix of
         Links which remain to be covered."""
         for row in self.loop('up'):
             for link in row.loop('left'):

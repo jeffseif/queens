@@ -1,7 +1,8 @@
+from queens import PREFIXES
 from queens.link import Link
 
 
-class Web:
+class Matrix:
     """A data structure for DLX (dancing links algorithm X).  (Doubly-linked)
     head Links link to a list of column Links -- corresponding to constraints
     for the set cover problem.  Column Links additionally link to rows which
@@ -24,7 +25,7 @@ class Web:
         self.primary = Link(name='primary')
         self.primary.attach(self.primary, 'right')
         previous = self.primary
-        for prefix in ('R', 'F'):
+        for prefix in PREFIXES[: 2]:
             for index in range(self.size):
                 name = '{}{}'.format(prefix, index)
                 column = Link(name=name)
@@ -37,7 +38,7 @@ class Web:
         self.secondary = Link(name='secondary')
         self.secondary.attach(self.secondary, 'right')
         previous = self.secondary
-        for prefix in ('A', 'B'):
+        for prefix in PREFIXES[2:]:
             for index in range(2 * self.size - 1):
                 name = '{}{}'.format(prefix, index)
                 column = Link(name=name)
@@ -49,10 +50,10 @@ class Web:
     def make_and_attach_rows(self):
         for index in range(self.size):
             for jndex in range(self.size):
-                name_i = 'R{}'.format(index)
-                name_j = 'F{}'.format(jndex)
-                name_a = 'A{}'.format(index + jndex)
-                name_b = 'B{}'.format(self.size - 1 - index + jndex)
+                name_i = '{}{}'.format(PREFIXES[0], index)
+                name_j = '{}{}'.format(PREFIXES[1], jndex)
+                name_a = '{}{}'.format(PREFIXES[2], index + jndex)
+                name_b = '{}{}'.format(PREFIXES[3], self.size - 1 - index + jndex)
 
                 previous = None
                 for column in self.column_link_iter():
