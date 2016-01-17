@@ -19,7 +19,6 @@ setup(
         'tox',
     ],
     test_suite='tests',
-    tests_require=['pytest'],
     url=__url__,
     version=__version__,
 )
