@@ -7,17 +7,15 @@ This project is a stepping-stone to a better algorithm for [my sudoku project](h
 
 ## Installation
 
-### virtualenv
+    > pip install -e git+https://github.com/jeffseif/queens.git#egg=queens
+
+## Development
 
     > git clone git@github.com:jeffseif/queens.git
-    > cd /path/to/queens/
+    > cd queens
     > virtualenv venv --python=$(which python3)
     > source venv/bin/activate
     > make
-
-### Package
-
-    > pip install -e git+https://github.com/jeffseif/queens.git#egg=queens
 
 ## Example invocation
 
