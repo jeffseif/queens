@@ -16,6 +16,7 @@ This project is a stepping-stone to a better algorithm for [my sudoku project](h
     > virtualenv venv --python=$(which python3)
     > source venv/bin/activate
     > make
+    > make test
 
 ## Example invocation
 
@@ -48,7 +49,3 @@ This project is a stepping-stone to a better algorithm for [my sudoku project](h
     | . . . ♕ |
     | . ♕ . . |
     +---------+
-
-### Running unit tests
-
-    > make test
