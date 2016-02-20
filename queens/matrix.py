@@ -12,14 +12,11 @@ class Matrix:
 
     def __init__(self, size):
         self.size = size
+        self.solution = []
 
         self.make_primary_columns()
         self.make_secondary_columns()
         self.make_and_attach_rows()
-
-    def column_link_iter(self):
-        for head in (self.primary, self.secondary):
-            yield from head.loop('right')
 
     def make_primary_columns(self):
         self.primary = Link(name='primary')
@@ -27,7 +24,7 @@ class Matrix:
         previous = self.primary
         for prefix in PREFIXES[: 2]:
             for index in range(self.size):
-                name = '{}{}'.format(prefix, index)
+                name = (prefix, index)
                 column = Link(name=name)
                 column.attach(column, 'up')
 
@@ -40,7 +37,7 @@ class Matrix:
         previous = self.secondary
         for prefix in PREFIXES[2:]:
             for index in range(2 * self.size - 1):
-                name = '{}{}'.format(prefix, index)
+                name = (prefix, index)
                 column = Link(name=name)
                 column.attach(column, 'up')
 
@@ -50,14 +47,11 @@ class Matrix:
     def make_and_attach_rows(self):
         for index in range(self.size):
             for jndex in range(self.size):
-                name_i = '{}{}'.format(PREFIXES[0], index)
-                name_j = '{}{}'.format(PREFIXES[1], jndex)
-                name_a = '{}{}'.format(PREFIXES[2], index + jndex)
-                name_b = '{}{}'.format(PREFIXES[3], self.size - 1 - index + jndex)
+                names = self.get_names_from_ij(self.size, index, jndex)
 
                 previous = None
                 for column in self.column_link_iter():
-                    if column.name in (name_i, name_j, name_a, name_b):
+                    if column.name in names:
                         row = Link(column=column, name=column.name)
                         column.attach(row, 'up')
                         column.size += 1
@@ -68,6 +62,23 @@ class Matrix:
                             previous.attach(row, 'right')
                         previous = row
 
+    @staticmethod
+    def get_names_from_ij(size, index, jndex):
+        return (
+            # Rank
+            (PREFIXES[0], index),
+            # File
+            (PREFIXES[1], jndex),
+            # Diagonal a
+            (PREFIXES[2], index + jndex),
+            # Diagonal b
+            (PREFIXES[3], size - 1 - index + jndex),
+        )
+
+    def column_link_iter(self):
+        for head in (self.primary, self.secondary):
+            yield from head.loop('right')
+
     def print_columns(self):
         print(','.join(map(str, self.column_link_iter())))
 
@@ -76,7 +87,7 @@ class Matrix:
             print('{}:'.format(column), ','.join(map(str, column.loop('down'))))
 
     def solve(self):
-        yield from self.search(self.primary, [])
+        yield from self.search(self.primary, self.solution)
 
     def search(self, head, solution):
         """The heart of the DLX algorithm."""

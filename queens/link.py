@@ -29,7 +29,7 @@ class Link:
         self.left = self.right = self.up = self.down = None
 
     def __str__(self):
-        return self.name
+        return ''.join(map(str, self.name))
 
     def loop(self, direction, include=False):
         """Traverse doubly-linked-list Links in a loop of a certain direction."""

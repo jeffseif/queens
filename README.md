@@ -28,11 +28,11 @@ This project is a stepping-stone to a better algorithm for [my sudoku project](h
     positional arguments:
       size        Number of queens (e.g., 8)
 
-      optional arguments:
-        -h, --help  show this help message and exit
-          --version   show program's version number and exit
+    optional arguments:
+      -h, --help  show this help message and exit
+      --version   show program's version number and exit
 
-          Version 1.0.0 | Jeffrey Seifried 2016
+    Version 1.0.0 | Jeffrey Seifried 2016
 
     > ./queens/main.py 4
     0
