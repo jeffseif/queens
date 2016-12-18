@@ -13,14 +13,11 @@ This project is a stepping-stone to a better algorithm for [my sudoku project](h
 
     > git clone git@github.com:jeffseif/queens.git
     > cd queens
-    > virtualenv venv --python=$(which python3)
-    > source venv/bin/activate
-    > make
     > make test
 
 ## Example invocation
 
-    > ./queens/main.py --help
+    > ./queens.sh --help
     usage: main.py [-h] [--version] [size]
 
     N-queens solver
@@ -34,7 +31,7 @@ This project is a stepping-stone to a better algorithm for [my sudoku project](h
 
     Version 1.0.0 | Jeffrey Seifried 2016
 
-    > ./queens/main.py 4
+    > ./queens.sh 4
     0
     +---------+
     | . ♕ . . |
