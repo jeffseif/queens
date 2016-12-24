@@ -17,7 +17,7 @@ This project is a stepping-stone to a better algorithm for [my sudoku project](h
 
 ## Example invocation
 
-    > ./queens.sh --help
+    > ./scripts/queens.sh --help
     usage: main.py [-h] [--version] [size]
 
     N-queens solver
@@ -31,7 +31,7 @@ This project is a stepping-stone to a better algorithm for [my sudoku project](h
 
     Version 1.0.0 | Jeffrey Seifried 2016
 
-    > ./queens.sh 4
+    > ./scripts/queens.sh 4
     0
     +---------+
     | . ♕ . . |
