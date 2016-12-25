@@ -1,8 +1,6 @@
-#! /usr/bin/env python3
 from queens import __author__
 from queens import __version__
 from queens import __year__
-
 from queens.matrix import Matrix
 from queens.solution import Solution
 
