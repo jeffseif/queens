@@ -1,4 +1,5 @@
 from setuptools import setup
+
 from queens import __author__
 from queens import __email__
 from queens import __program__
