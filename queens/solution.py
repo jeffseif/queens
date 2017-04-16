@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from queens import GRAY
-from queens import WHITE
+from colors import GRAY
+from colors import WHITE
 
 
 class Solution:
