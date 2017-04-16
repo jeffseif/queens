@@ -18,7 +18,6 @@ venv: requirements.txt
 		$@
 	@$@/bin/pip install \
 		--requirement $<
-	@touch $@
 
 test: venv
 	@$</bin/tox
