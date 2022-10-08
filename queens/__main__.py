@@ -11,27 +11,27 @@ DEFAULT_SIZE = 8
 def main():
     import argparse
 
-    __version__author__year__ = '{} | {} {}'.format(
+    __version__author__year__ = "{} | {} {}".format(
         __version__,
         __author__,
         __year__,
     )
 
     parser = argparse.ArgumentParser(
-        description='N-queens solver',
-        epilog='Version {}'.format(__version__author__year__)
+        description="N-queens solver",
+        epilog="Version {}".format(__version__author__year__),
     )
     parser.add_argument(
-        '--version',
-        action='version',
-        version='%(prog)s {}'.format(__version__author__year__),
+        "--version",
+        action="version",
+        version="%(prog)s {}".format(__version__author__year__),
     )
     parser.add_argument(
-        'size',
-        nargs='?',
+        "size",
+        nargs="?",
         default=DEFAULT_SIZE,
         type=int,
-        help='Number of queens (e.g., %(default)s)',
+        help="Number of queens (e.g., %(default)s)",
     )
     args = parser.parse_args()
 
@@ -41,6 +41,7 @@ def main():
         print(Solution(solution))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
+
     sys.exit(main())
